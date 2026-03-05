@@ -44,12 +44,10 @@ jobs:
               id "com.android.application"
               id "kotlin-android"
               id "dev.flutter.flutter-gradle-plugin"
-              id "com.google.gms.google-services"
           }
           android {
               namespace "com.basketball.controller"
-              compileSdk flutter.compileSdkVersion
-              ndkVersion flutter.ndkVersion
+              compileSdk 34
               compileOptions {
                   sourceCompatibility JavaVersion.VERSION_1_8
                   targetCompatibility JavaVersion.VERSION_1_8
@@ -57,10 +55,10 @@ jobs:
               kotlinOptions { jvmTarget = '1.8' }
               defaultConfig {
                   applicationId "com.basketball.controller"
-                 minSdkVersion 21
-                 targetSdkVersion 34
+                  minSdk 21
+                  targetSdk 34
                   versionCode 1
-                versionName "1.0"
+                  versionName "1.0"
               }
               buildTypes {
                   release { signingConfig signingConfigs.debug }
@@ -73,29 +71,6 @@ jobs:
           }
           GRADLE
 
-      - name: Write root build.gradle
-        run: |
-          cat > tmp_app/android/build.gradle << 'GRADLE'
-          buildscript {
-              ext.kotlin_version = '1.9.0'
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.1.0'
-                  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-                  classpath 'com.google.gms:google-services:4.4.0'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          GRADLE
-
       - name: Install dependencies
         working-directory: tmp_app
         run: flutter pub get
@@ -103,9 +78,6 @@ jobs:
       - name: Build APK
         working-directory: tmp_app
         run: flutter build apk --release
-
-      - name: List APK files
-        run: find tmp_app/build -name "*.apk" 2>/dev/null || echo "No APK found"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
