@@ -1,14 +1,12 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
     id "com.google.gms.google-services"
 }
 
 android {
     namespace "com.basketball.controller"
-    compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdk 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -19,29 +17,20 @@ android {
         jvmTarget = '1.8'
     }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
     defaultConfig {
         applicationId "com.basketball.controller"
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutter.versionCode
-        versionName flutter.versionName
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
     }
 
     buildTypes {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled false
-            shrinkResources false
         }
     }
-}
-
-flutter {
-    source '../..'
 }
 
 dependencies {
