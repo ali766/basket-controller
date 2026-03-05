@@ -29,39 +29,61 @@ jobs:
         run: flutter create --org com.basketball --project-name basketball_controller tmp_app
 
       - name: Copy lib files
-        run: |
-          cp -r lib/* tmp_app/lib/
-          cp pubspec.yaml tmp_app/pubspec.yaml
+        run: cp -r lib/* tmp_app/lib/
 
-      - name: Copy Firebase config
-        run: |
-          cp android/app/google-services.json tmp_app/android/app/google-services.json
+      - name: Copy pubspec
+        run: cp pubspec.yaml tmp_app/pubspec.yaml
 
-      - name: Add Firebase to build.gradle
-        run: |
-          cd tmp_app
-          sed -i "s/id 'com.android.application'/id 'com.android.application'\n    id 'com.google.gms.google-services'/" android/app/build.gradle
-          sed -i "s/dependencies {/dependencies {\n    implementation platform('com.google.firebase:firebase-bom:32.7.0')\n    implementation 'com.google.firebase:firebase-database'/" android/app/build.gradle
-          sed -i "s/id 'com.android.application'/id 'com.android.application'/" android/build.gradle
-          echo "classpath 'com.google.gms:google-services:4.4.0'" >> android/build.gradle || true
+      - name: Copy google-services.json
+        run: cp android/app/google-services.json tmp_app/android/app/google-services.json
 
-      - name: Add Google services to project build.gradle
+      - name: Write app build.gradle
         run: |
-          cd tmp_app
-          sed -i "/classpath 'com.android.tools.build:gradle/a\\        classpath 'com.google.gms:google-services:4.4.0'" android/build.gradle
+          cat > tmp_app/android/app/build.gradle << 'EOF'
+          plugins {
+              id "com.android.application"
+              id "kotlin-android"
+              id "dev.flutter.flutter-gradle-plugin"
+              id "com.google.gms.google-services"
+          }
+          android {
+              namespace "com.basketball.basketball_controller"
+              compileSdk flutter.compileSdkVersion
+              ndkVersion flutter.ndkVersion
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_1_8
+                  targetCompatibility JavaVersion.VERSION_1_8
+              }
+              kotlinOptions { jvmTarget = '1.8' }
+              defaultConfig {
+                  applicationId "com.basketball.basketball_controller"
+                  minSdkVersion flutter.minSdkVersion
+                  targetSdkVersion flutter.targetSdkVersion
+                  versionCode flutter.versionCode
+                  versionName flutter.versionName
+              }
+              buildTypes {
+                  release { signingConfig signingConfigs.debug }
+              }
+          }
+          flutter { source '../..' }
+          dependencies {
+              implementation platform('com.google.firebase:firebase-bom:32.7.0')
+              implementation 'com.google.firebase:firebase-database'
+          }
+          EOF
 
-      - name: Install dependencies
+      - name: Write root build.gradle
         run: |
-          cd tmp_app
-          flutter pub get
-
-      - name: Build APK
-        run: |
-          cd tmp_app
-          flutter build apk --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: basketball-controller-apk
-          path: tmp_app/build/app/outputs/flutter-apk/app-release.apk
+          cat > tmp_app/android/build.gradle << 'EOF'
+          buildscript {
+              ext.kotlin_version = '1.9.0'
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.1.0'
+                  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+                  classpath 'com.google.gms:google-services:4.4.0'
+              }
