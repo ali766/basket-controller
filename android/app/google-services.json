@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "760753992927",
+    "project_id": "ok-new-7c868",
+    "storage_bucket": "ok-new-7c868.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760753992927:android:8702569c9c7c45be7fe56a",
+        "android_info": {
+          "package_name": "com.basketball.controller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr78eta_v2AOxrll2mTX8noI805qPtifA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
