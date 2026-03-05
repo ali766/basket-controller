@@ -211,7 +211,42 @@ class _ControllerScreenState extends State<ControllerScreen> {
 
   // ── Bravo ──
   void _sendBravo() {
-    _bravoRef.set({'ts': DateTime.now().millisecondsSinceEpoch, 'active': true});
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: const Color(0xFF1a1a1a),
+        title: const Text('برافو لمين؟', 
+            style: TextStyle(color: Colors.white, fontSize: 20)),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            onPressed: () {
+              Navigator.pop(context);
+              _fireBravo(_gs.tn1);
+            },
+            child: Text(_gs.tn1, 
+                style: const TextStyle(color: Colors.white, fontSize: 18)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            onPressed: () {
+              Navigator.pop(context);
+              _fireBravo(_gs.tn2);
+            },
+            child: Text(_gs.tn2, 
+                style: const TextStyle(color: Colors.white, fontSize: 18)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _fireBravo(String teamName) {
+    _bravoRef.set({
+      'ts': DateTime.now().millisecondsSinceEpoch,
+      'active': true,
+      'teamName': teamName,
+    });
     setState(() => _bravoActive = true);
     Future.delayed(const Duration(seconds: 4), () {
       _bravoRef.set({'ts': DateTime.now().millisecondsSinceEpoch, 'active': false});
