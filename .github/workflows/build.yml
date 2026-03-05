@@ -26,7 +26,7 @@ jobs:
           channel: 'stable'
 
       - name: Create Flutter project
-        run: flutter create --org com.basketball --project-name basketball_controller tmp_app
+        run: flutter create --org com.basketball.controller --project-name app tmp_app
 
       - name: Copy lib files
         run: cp -r lib/* tmp_app/lib/
@@ -47,7 +47,7 @@ jobs:
               id "com.google.gms.google-services"
           }
           android {
-              namespace "com.basketball.basketball_controller"
+              namespace "com.basketball.controller"
               compileSdk flutter.compileSdkVersion
               ndkVersion flutter.ndkVersion
               compileOptions {
@@ -56,7 +56,7 @@ jobs:
               }
               kotlinOptions { jvmTarget = '1.8' }
               defaultConfig {
-                  applicationId "com.basketball.basketball_controller"
+                  applicationId "com.basketball.controller"
                  minSdkVersion 21
                  targetSdkVersion 34
                   versionCode 1
