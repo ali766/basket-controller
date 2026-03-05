@@ -135,8 +135,6 @@ class _ControllerScreenState extends State<ControllerScreen> {
       _gs.shot = val;
       _gs.shotMs = 0;
     });
-    _startShot();
-    if (!_gs.mainRunning) _startMain();
     _push(immediate: true);
   }
 
