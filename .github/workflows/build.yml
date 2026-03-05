@@ -57,10 +57,10 @@ jobs:
               kotlinOptions { jvmTarget = '1.8' }
               defaultConfig {
                   applicationId "com.basketball.basketball_controller"
-                  minSdkVersion flutter.minSdkVersion
-                  targetSdkVersion flutter.targetSdkVersion
-                  versionCode flutter.versionCode
-                  versionName flutter.versionName
+                 minSdkVersion 21
+targetSdkVersion 34
+versionCode 1
+versionName "1.0"
               }
               buildTypes {
                   release { signingConfig signingConfigs.debug }
