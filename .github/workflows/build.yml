@@ -25,7 +25,7 @@ jobs:
           flutter-version: '3.19.0'
           channel: 'stable'
 
-      - name: Create fresh Flutter project
+      - name: Create Flutter project
         run: flutter create --org com.basketball --project-name basketball_controller tmp_app
 
       - name: Copy lib files
@@ -34,12 +34,12 @@ jobs:
       - name: Copy pubspec
         run: cp pubspec.yaml tmp_app/pubspec.yaml
 
-      - name: Copy google-services.json
+      - name: Copy google-services
         run: cp android/app/google-services.json tmp_app/android/app/google-services.json
 
       - name: Write app build.gradle
         run: |
-          cat > tmp_app/android/app/build.gradle << 'EOF'
+          cat > tmp_app/android/app/build.gradle << 'GRADLE'
           plugins {
               id "com.android.application"
               id "kotlin-android"
@@ -71,11 +71,11 @@ jobs:
               implementation platform('com.google.firebase:firebase-bom:32.7.0')
               implementation 'com.google.firebase:firebase-database'
           }
-          EOF
+          GRADLE
 
       - name: Write root build.gradle
         run: |
-          cat > tmp_app/android/build.gradle << 'EOF'
+          cat > tmp_app/android/build.gradle << 'GRADLE'
           buildscript {
               ext.kotlin_version = '1.9.0'
               repositories {
@@ -87,3 +87,29 @@ jobs:
                   classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
                   classpath 'com.google.gms:google-services:4.4.0'
               }
+          }
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          GRADLE
+
+      - name: Install dependencies
+        working-directory: tmp_app
+        run: flutter pub get
+
+      - name: Build APK
+        working-directory: tmp_app
+        run: flutter build apk --release
+
+      - name: List APK files
+        run: find tmp_app/build -name "*.apk" 2>/dev/null || echo "No APK found"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: basketball-controller-apk
+          path: tmp_app/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
